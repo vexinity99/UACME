@@ -31,4 +31,4 @@ jobs:
         with:
           name: uacme-release
           path: |
-            Source/**/bin/Release/x64/*.exe
+            Bin/*.exe
