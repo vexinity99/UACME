@@ -1,4 +1,4 @@
-name: Build UACME
+name: Build UACME (Force v170)
 
 on:
   push:
@@ -9,22 +9,35 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # Step 1: Checkout repository
+    # Step 1: Checkout the repo
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Step 2: Setup MSBuild (includes Visual Studio Build Tools)
+    # Step 2: Setup MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
-    # Step 3: Build the solution using MSBuild
+    # Step 3: Build solution forcing v170 toolset
     - name: Build solution
-      run: msbuild Source/uacme.sln /p:Configuration=Release /p:Platform=x64
+      run: |
+        msbuild Source/uacme.sln ^
+          /p:Configuration=Release ^
+          /p:Platform=x64 ^
+          /p:PlatformToolset=v170 ^
+          /m
 
-    # Step 4: Upload build outputs
-    - name: Upload build output
+    # Step 4: Upload all binaries from Release folders
+    - name: Upload build outputs
       uses: actions/upload-artifact@v4
       with:
         name: uacme-build
         path: |
           **/bin/Release/**
+
+    # Optional: Upload debug symbols too
+    #- name: Upload PDBs
+    #  uses: actions/upload-artifact@v4
+    #  with:
+    #    name: uacme-pdbs
+    #    path: |
+    #      **/bin/Release/**/*.pdb
