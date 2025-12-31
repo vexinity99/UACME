@@ -13,26 +13,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup MSBuild / Visual Studio
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      # Step 3: Build the solution
-      - name: Build uacme.sln
-        run: msbuild Source\uacme.sln /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /m
+      - name: Build solution
+        run: msbuild Source\uacme.sln /p:Configuration=Release /p:Platform=x64 /m
 
-      # Step 4: Upload compiled artifacts
-      - name: Upload Artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: uacme-release
+          name: uacme-build
           path: |
-            Source\Akagi\bin\Release\x64\
-            Source\Fubuki\bin\Release\x64\
-            Source\Naka\bin\Release\x64\
-            Source\Yuubari\bin\Release\x64\
-            Source\Akatsuki\bin\Release\x64\
+            Source/**/bin/Release/x64/*.exe
+            Source/**/bin/Release/x64/*.dll
