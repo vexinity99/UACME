@@ -9,20 +9,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    # Step 1: Checkout repository
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+    # Step 2: Setup MSBuild (includes Visual Studio Build Tools)
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
-    - name: Restore dependencies
-      run: dotnet restore Source/uacme.sln
-
+    # Step 3: Build the solution using MSBuild
     - name: Build solution
-      run: dotnet build Source/uacme.sln --configuration Release --no-restore
+      run: msbuild Source/uacme.sln /p:Configuration=Release /p:Platform=x64
 
+    # Step 4: Upload build outputs
     - name: Upload build output
       uses: actions/upload-artifact@v4
       with:
