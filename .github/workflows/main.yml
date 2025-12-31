@@ -3,31 +3,32 @@ name: Build UACME
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
+      # Step 2: Setup MSBuild / Visual Studio
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Build solution
-      run: |
-        msbuild Source\uacme.sln /p:Configuration=Release /p:Platform=x64 /m
+      # Step 3: Build the solution
+      - name: Build uacme.sln
+        run: msbuild Source\uacme.sln /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=v143 /m
 
-    - name: Upload EXE artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: UACME-Build
-        path: |
-          Source\Akagi\bin\Release\x64\*.exe
-          Source\Naka\bin\Release\x64\*.exe
-          Source\Yuubari\bin\Release\x64\*.exe
-          Source\Fubuki\bin\Release\x64\*.exe
-          Source\Akatsuki\bin\Release\x64\*.exe
+      # Step 4: Upload compiled artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: uacme-release
+          path: |
+            Source/**/bin/Release/x64/*.exe
